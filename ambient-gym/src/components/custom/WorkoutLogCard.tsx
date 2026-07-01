@@ -85,11 +85,11 @@ const styles = StyleSheet.create({
   exerciseTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#000000',
   },
   timeText: {
     fontSize: 11,
-    color: 'rgba(255,255,255,0.4)',
+    color: 'rgba(0,0,0,0.4)',
     marginTop: 2,
   },
   midCol: {
@@ -104,11 +104,11 @@ const styles = StyleSheet.create({
   metricVal: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#000000',
   },
   metricLbl: {
     fontSize: 9,
-    color: 'rgba(255,255,255,0.4)',
+    color: 'rgba(0,0,0,0.4)',
     textTransform: 'uppercase',
   },
   rightCol: {

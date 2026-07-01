@@ -74,10 +74,10 @@ export function OverloadPanel() {
             onChangeText={setWeight}
             keyboardType="numeric"
             placeholder="225"
-            placeholderTextColor="rgba(255,255,255,0.3)"
+            placeholderTextColor="rgba(0,0,0,0.3)"
           />
         </View>
-
+ 
         <View style={styles.inputCol}>
           <Text style={styles.label}>Reps</Text>
           <TextInput
@@ -86,10 +86,10 @@ export function OverloadPanel() {
             onChangeText={setActualReps}
             keyboardType="numeric"
             placeholder="5"
-            placeholderTextColor="rgba(255,255,255,0.3)"
+            placeholderTextColor="rgba(0,0,0,0.3)"
           />
         </View>
-
+ 
         <View style={styles.inputCol}>
           <Text style={styles.label}>Target</Text>
           <TextInput
@@ -98,10 +98,10 @@ export function OverloadPanel() {
             onChangeText={setTargetReps}
             keyboardType="numeric"
             placeholder="5"
-            placeholderTextColor="rgba(255,255,255,0.3)"
+            placeholderTextColor="rgba(0,0,0,0.3)"
           />
         </View>
-
+ 
         <View style={styles.inputCol}>
           <Text style={styles.label}>RPE</Text>
           <TextInput
@@ -110,7 +110,7 @@ export function OverloadPanel() {
             onChangeText={setRpe}
             keyboardType="numeric"
             placeholder="9"
-            placeholderTextColor="rgba(255,255,255,0.3)"
+            placeholderTextColor="rgba(0,0,0,0.3)"
           />
         </View>
       </View>
@@ -178,13 +178,13 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#000000',
     marginBottom: 16,
   },
   subHeader: {
     fontSize: 13,
     fontWeight: '600',
-    color: 'rgba(255,255,255,0.6)',
+    color: 'rgba(0,0,0,0.5)',
     marginTop: 16,
     marginBottom: 8,
     textTransform: 'uppercase',
@@ -199,16 +199,16 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 11,
-    color: 'rgba(255,255,255,0.5)',
+    color: 'rgba(0,0,0,0.4)',
     marginBottom: 4,
   },
   input: {
-    backgroundColor: 'rgba(0,0,0,0.2)',
+    backgroundColor: '#ffffff',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
+    borderColor: 'rgba(0,0,0,0.1)',
     borderRadius: 8,
     height: 38,
-    color: '#ffffff',
+    color: '#000000',
     fontSize: 14,
     textAlign: 'center',
   },
@@ -219,19 +219,19 @@ const styles = StyleSheet.create({
   },
   optionButton: {
     flex: 1,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: 'rgba(0,0,0,0.02)',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
+    borderColor: 'rgba(0,0,0,0.06)',
     borderRadius: 8,
     paddingVertical: 8,
     alignItems: 'center',
   },
   activeOption: {
-    borderColor: '#818cf8',
-    backgroundColor: 'rgba(129, 140, 248, 0.15)',
+    borderColor: '#4f46e5',
+    backgroundColor: 'rgba(79, 70, 229, 0.08)',
   },
   optionText: {
-    color: '#ffffff',
+    color: '#000000',
     fontSize: 12,
     fontWeight: '500',
   },
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.15)',
+    backgroundColor: 'rgba(0,0,0,0.02)',
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -257,12 +257,12 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 4,
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: 'rgba(0,0,0,0.05)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   btnMiniText: {
-    color: '#ffffff',
+    color: '#000000',
     fontSize: 14,
     fontWeight: 'bold',
   },
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 8,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.1)',
+    borderTopColor: 'rgba(0,0,0,0.06)',
     paddingTop: 16,
   },
   outputCell: {
@@ -281,18 +281,18 @@ const styles = StyleSheet.create({
   },
   primaryOutput: {
     borderLeftWidth: 1,
-    borderLeftColor: 'rgba(255,255,255,0.1)',
+    borderLeftColor: 'rgba(0,0,0,0.06)',
   },
   outLabel: {
     fontSize: 10,
-    color: 'rgba(255,255,255,0.4)',
+    color: 'rgba(0,0,0,0.4)',
     textTransform: 'uppercase',
     marginBottom: 4,
   },
   outValue: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#000000',
   },
 });
 export default OverloadPanel;

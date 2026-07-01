@@ -191,7 +191,7 @@ export default function OnboardingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0a0a0c',
+    backgroundColor: '#f2f2f7',
   },
   scrollContent: {
     padding: 24,
@@ -207,13 +207,13 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#000000',
     textAlign: 'center',
     marginBottom: 12,
   },
   description: {
     fontSize: 15,
-    color: 'rgba(255,255,255,0.6)',
+    color: 'rgba(0,0,0,0.6)',
     textAlign: 'center',
     lineHeight: 22,
     paddingHorizontal: 12,
@@ -225,18 +225,18 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: 11,
-    color: 'rgba(255,255,255,0.4)',
+    color: 'rgba(0,0,0,0.4)',
     fontWeight: '700',
     letterSpacing: 1.5,
     marginBottom: 8,
   },
   input: {
-    backgroundColor: '#1c1c1e',
+    backgroundColor: '#ffffff',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderColor: 'rgba(0,0,0,0.1)',
     borderRadius: 12,
     height: 50,
-    color: '#ffffff',
+    color: '#000000',
     fontSize: 16,
     paddingHorizontal: 16,
   },
@@ -245,9 +245,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   optionCard: {
-    backgroundColor: '#1c1c1e',
+    backgroundColor: '#ffffff',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderColor: 'rgba(0,0,0,0.06)',
     borderRadius: 14,
     padding: 16,
   },
@@ -258,18 +258,18 @@ const styles = StyleSheet.create({
   optionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#000000',
     marginBottom: 4,
   },
   optionDesc: {
     fontSize: 13,
-    color: 'rgba(255,255,255,0.5)',
+    color: 'rgba(0,0,0,0.5)',
     lineHeight: 18,
   },
   consentCard: {
-    backgroundColor: '#1c1c1e',
+    backgroundColor: '#ffffff',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
+    borderColor: 'rgba(0,0,0,0.06)',
     borderRadius: 14,
     padding: 20,
     width: '100%',
@@ -277,16 +277,16 @@ const styles = StyleSheet.create({
   consentTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#000000',
     marginBottom: 8,
   },
   consentDesc: {
     fontSize: 14,
-    color: 'rgba(255,255,255,0.6)',
+    color: 'rgba(0,0,0,0.6)',
     lineHeight: 20,
   },
   actionButton: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#000000',
     width: '100%',
     height: 50,
     borderRadius: 12,
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     opacity: 0.4,
   },
   actionButtonText: {
-    color: '#000000',
+    color: '#ffffff',
     fontSize: 16,
     fontWeight: '700',
   },

@@ -1,8 +1,8 @@
 /**
- * Glassmorphic Card Container with iOS native BlurView support
+ * Glassmorphic Card Container (Enforced Light Theme)
  */
 import React from 'react';
-import { StyleSheet, View, ViewStyle, useColorScheme } from 'react-native';
+import { StyleSheet, View, ViewStyle } from 'react-native';
 import { BlurView } from 'expo-blur';
 
 interface GlassCardProps {
@@ -11,16 +11,13 @@ interface GlassCardProps {
   intensity?: number;
 }
 
-export function GlassCard({ children, style, intensity = 65 }: GlassCardProps) {
-  const scheme = useColorScheme();
-  const isDark = scheme === 'dark';
-
+export function GlassCard({ children, style, intensity = 85 }: GlassCardProps) {
   return (
-    <View style={[styles.card, isDark ? styles.cardDark : styles.cardLight, style]}>
-      {/* Native-accelerated iOS Blur Layer */}
+    <View style={[styles.card, style]}>
+      {/* Native-accelerated Blur Layer (always light) */}
       <BlurView
         intensity={intensity}
-        tint={isDark ? 'dark' : 'light'}
+        tint="light"
         style={StyleSheet.absoluteFill}
       />
       <View style={styles.content}>
@@ -32,25 +29,19 @@ export function GlassCard({ children, style, intensity = 65 }: GlassCardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 24,
+    borderRadius: 16,
     borderWidth: 1,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.2,
-    shadowRadius: 16,
-    elevation: 4,
-  },
-  cardDark: {
-    borderColor: 'rgba(255, 255, 255, 0.12)',
-    backgroundColor: 'rgba(20, 20, 25, 0.4)',
-  },
-  cardLight: {
-    borderColor: 'rgba(0, 0, 0, 0.08)',
-    backgroundColor: 'rgba(255, 255, 255, 0.65)',
+    borderColor: 'rgba(0, 0, 0, 0.06)',
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    elevation: 2,
   },
   content: {
-    padding: 20,
+    padding: 16,
   },
 });
 export default GlassCard;

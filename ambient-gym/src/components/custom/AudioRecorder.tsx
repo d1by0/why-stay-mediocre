@@ -142,7 +142,7 @@ export function AudioRecorder({ onParsedWorkout, openaiKey }: AudioRecorderProps
       <View style={styles.manualInputWrapper}>
         <TextInput
           placeholder="Or type workout log here..."
-          placeholderTextColor="rgba(255,255,255,0.4)"
+          placeholderTextColor="rgba(0,0,0,0.35)"
           value={manualText}
           onChangeText={setManualText}
           style={styles.input}
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#000000',
     marginBottom: 12,
   },
   recorderWrapper: {
@@ -184,8 +184,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     shadowColor: '#ef4444',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
     marginBottom: 10,
   },
   recordingActive: {
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 13,
-    color: 'rgba(255,255,255,0.7)',
+    color: 'rgba(0,0,0,0.6)',
     textAlign: 'center',
     paddingHorizontal: 20,
   },
@@ -215,22 +215,22 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   transcriptBox: {
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: 'rgba(0,0,0,0.03)',
     padding: 12,
     borderRadius: 12,
     marginTop: 10,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
+    borderColor: 'rgba(0,0,0,0.06)',
   },
   transcriptLabel: {
     fontSize: 11,
-    color: '#818cf8',
+    color: '#4f46e5',
     fontWeight: '600',
     textTransform: 'uppercase',
   },
   transcriptText: {
     fontSize: 14,
-    color: '#e2e8f0',
+    color: '#000000',
     marginTop: 2,
   },
   manualInputWrapper: {
@@ -238,20 +238,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
+    borderColor: 'rgba(0,0,0,0.1)',
     borderRadius: 12,
     paddingHorizontal: 8,
-    backgroundColor: 'rgba(0,0,0,0.2)',
+    backgroundColor: '#ffffff',
   },
   input: {
     flex: 1,
     height: 40,
-    color: '#ffffff',
+    color: '#000000',
     fontSize: 14,
     paddingHorizontal: 8,
   },
   sendButton: {
-    backgroundColor: '#4f46e5',
+    backgroundColor: '#000000',
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 8,

@@ -150,7 +150,7 @@ export default function CircleScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0a0a0c',
+    backgroundColor: '#f2f2f7',
   },
   safeArea: {
     flex: 1,
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     width: 320,
     height: 320,
     borderRadius: 160,
-    backgroundColor: 'rgba(99, 102, 241, 0.12)',
+    backgroundColor: 'rgba(99, 102, 241, 0.03)',
     filter: Platform.OS === 'web' ? 'blur(60px)' : undefined,
   },
   headerBar: {
@@ -173,23 +173,23 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.08)',
+    borderBottomColor: 'rgba(0, 0, 0, 0.05)',
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#000000',
   },
   shareButton: {
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: 'rgba(0, 0, 0, 0.04)',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
+    borderColor: 'rgba(0, 0, 0, 0.08)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
   },
   shareButtonText: {
-    color: '#ffffff',
+    color: '#000000',
     fontSize: 12,
     fontWeight: '600',
   },
@@ -204,18 +204,18 @@ const styles = StyleSheet.create({
   infoTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#000000',
     marginBottom: 4,
   },
   infoDesc: {
     fontSize: 13,
-    color: 'rgba(255,255,255,0.6)',
+    color: 'rgba(0, 0, 0, 0.6)',
     lineHeight: 18,
   },
   sectionTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: 'rgba(255,255,255,0.4)',
+    color: 'rgba(0, 0, 0, 0.4)',
     textTransform: 'uppercase',
     letterSpacing: 1.5,
     marginTop: 8,
@@ -232,17 +232,17 @@ const styles = StyleSheet.create({
   friendName: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#000000',
   },
   updateText: {
     fontSize: 11,
-    color: 'rgba(255,255,255,0.4)',
+    color: 'rgba(0, 0, 0, 0.4)',
     marginTop: 2,
   },
   streakBadge: {
-    backgroundColor: 'rgba(250, 45, 90, 0.12)',
+    backgroundColor: 'rgba(250, 45, 90, 0.08)',
     borderWidth: 1,
-    borderColor: 'rgba(250, 45, 90, 0.25)',
+    borderColor: 'rgba(250, 45, 90, 0.2)',
     borderRadius: 6,
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
   metricsGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(0,0,0,0.15)',
+    backgroundColor: 'rgba(0, 0, 0, 0.02)',
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 8,
@@ -268,19 +268,19 @@ const styles = StyleSheet.create({
   metricVal: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#000000',
   },
   metricLabel: {
     fontSize: 10,
-    color: 'rgba(255,255,255,0.4)',
+    color: 'rgba(0, 0, 0, 0.4)',
     textTransform: 'uppercase',
     marginTop: 4,
   },
   greenText: {
-    color: '#34d399',
+    color: '#10b981',
   },
   dimText: {
-    color: 'rgba(255,255,255,0.3)',
+    color: 'rgba(0, 0, 0, 0.3)',
   },
   cheerButton: {
     backgroundColor: '#0a84ff',
@@ -289,9 +289,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cheerDisabled: {
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: 'rgba(0, 0, 0, 0.04)',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
+    borderColor: 'rgba(0, 0, 0, 0.08)',
   },
   cheerText: {
     color: '#ffffff',

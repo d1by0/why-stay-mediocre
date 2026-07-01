@@ -237,14 +237,14 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: '#f2f2f7',
   },
   safeArea: {
     flex: 1,
   },
   loadingContainer: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: '#f2f2f7',
   },
   scrollContent: {
     padding: 16,
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     width: 320,
     height: 320,
     borderRadius: 160,
-    backgroundColor: 'rgba(250, 45, 90, 0.06)',
+    backgroundColor: 'rgba(250, 45, 90, 0.03)',
     filter: Platform.OS === 'web' ? 'blur(80px)' : undefined,
   },
   headerBar: {
@@ -269,18 +269,18 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.08)',
+    borderBottomColor: 'rgba(0, 0, 0, 0.05)',
   },
   dateLabel: {
     fontSize: 10,
     fontWeight: '700',
-    color: 'rgba(255,255,255,0.4)',
+    color: 'rgba(0, 0, 0, 0.4)',
     letterSpacing: 1.5,
   },
   headerTitle: {
     fontSize: 28,
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#000000',
     marginTop: 2,
   },
   headerActions: {
@@ -290,22 +290,22 @@ const styles = StyleSheet.create({
   },
   configButton: {
     padding: 8,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: 'rgba(0, 0, 0, 0.04)',
     borderRadius: 8,
   },
   configButtonText: {
     fontSize: 16,
   },
   resetAuthButton: {
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: 'rgba(0, 0, 0, 0.04)',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
+    borderColor: 'rgba(0, 0, 0, 0.08)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
   },
   resetAuthText: {
-    color: '#ffffff',
+    color: '#000000',
     fontSize: 11,
     fontWeight: '600',
   },
@@ -315,26 +315,26 @@ const styles = StyleSheet.create({
   configHeader: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#000000',
   },
   configText: {
     fontSize: 12,
-    color: 'rgba(255,255,255,0.5)',
+    color: 'rgba(0, 0, 0, 0.5)',
     marginVertical: 8,
     lineHeight: 16,
   },
   configInput: {
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: '#ffffff',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
+    borderColor: 'rgba(0, 0, 0, 0.1)',
     borderRadius: 8,
     padding: 10,
-    color: '#ffffff',
+    color: '#000000',
     fontSize: 13,
     marginBottom: 10,
   },
   configSave: {
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    backgroundColor: '#000000',
     paddingVertical: 8,
     borderRadius: 8,
     alignItems: 'center',
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
   cardHeader: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#000000',
     marginBottom: 16,
   },
   ringsContainer: {
@@ -385,9 +385,9 @@ const styles = StyleSheet.create({
   },
   waterBtn: {
     flex: 1,
-    backgroundColor: 'rgba(0, 162, 255, 0.1)',
+    backgroundColor: 'rgba(0, 162, 255, 0.08)',
     borderWidth: 1,
-    borderColor: 'rgba(0, 162, 255, 0.25)',
+    borderColor: 'rgba(0, 162, 255, 0.2)',
     paddingVertical: 10,
     borderRadius: 10,
     alignItems: 'center',
@@ -403,19 +403,19 @@ const styles = StyleSheet.create({
   logsHeader: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#000000',
   },
   emptyCard: {
     alignItems: 'center',
     paddingVertical: 32,
   },
   emptyText: {
-    color: '#ffffff',
+    color: '#000000',
     fontWeight: '700',
     fontSize: 14,
   },
   emptySubtext: {
-    color: 'rgba(255,255,255,0.4)',
+    color: 'rgba(0, 0, 0, 0.4)',
     fontSize: 12,
     textAlign: 'center',
     marginTop: 4,
