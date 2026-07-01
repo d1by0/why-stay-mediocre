@@ -1,103 +1,105 @@
 /**
- * Ambient AI Gym & Workout Tracking Main Dashboard
+ * Apple Health-Inspired Ambient Habit Dashboard
  */
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, TextInput, Image, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, TextInput, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSession } from '../hooks/useSession';
-import { useWorkoutData } from '../hooks/useWorkoutData';
+import { useRouter } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
+import { AppleRing } from '../components/custom/AppleRing';
 import { AudioRecorder } from '../components/custom/AudioRecorder';
 import { SyncPanel } from '../components/custom/SyncPanel';
 import { OverloadPanel } from '../components/custom/OverloadPanel';
 import { WorkoutLogCard } from '../components/custom/WorkoutLogCard';
 import { GlassCard } from '../components/custom/GlassCard';
-import { AI_KEYS } from '../services/aiParser';
+import { useWorkoutData } from '../hooks/useWorkoutData';
 import * as Haptics from 'expo-haptics';
 
 export default function HomeScreen() {
-  const { session, loginWithOAuth, logout } = useSession();
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const { workoutSets, addWorkoutSet, deleteWorkoutSet, clearAllSets, refreshData } = useWorkoutData();
+  
+  // Hydration state
+  const [waterOunces, setWaterOunces] = useState(0);
+  const waterTarget = 80; // 80 oz target
+
+  // API config state
   const [apiKey, setApiKey] = useState('');
   const [showConfig, setShowConfig] = useState(false);
 
-  const handleParsedWorkout = (exercise: string, weight: number, reps: number, rpe: number | null) => {
-    addWorkoutSet(exercise, weight, reps, rpe);
-  };
+  // Check auth status on mount
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const token = Platform.OS === 'web' 
+          ? localStorage.getItem('ambient_gym_jwt_token')
+          : await SecureStore.getItemAsync('ambient_gym_jwt_token');
 
-  const triggerHapticAuth = async (provider: 'apple' | 'google') => {
-    if (Platform.OS !== 'web') {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+        if (!token) {
+          router.replace('/onboarding' as any);
+        } else {
+          setIsAuthenticated(true);
+        }
+      } catch (err) {
+        console.error(err);
+        router.replace('/onboarding' as any);
+      }
     }
-    await loginWithOAuth(provider);
+    checkAuth();
+  }, []);
+
+  const handleLogWater = async (amount: number) => {
+    if (Platform.OS !== 'web') {
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    setWaterOunces((prev) => Math.min(prev + amount, 120));
   };
 
-  // Compute stats
-  const totalVolume = workoutSets.reduce((sum, s) => sum + s.weight * s.reps, 0);
+  const handleClearWater = async () => {
+    if (Platform.OS !== 'web') {
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    }
+    setWaterOunces(0);
+  };
+
+  // Calculations
+  const activeCaloriesBurned = workoutSets.reduce((sum, s) => sum + (s.weight * s.reps * 0.1), 0);
+  const calorieTarget = 400;
+  
+  const journalProgress = workoutSets.length > 0 ? 1.0 : 0.0;
   const dirtyCount = workoutSets.filter(s => s.isDirty).length;
 
-  if (!session) {
-    return (
-      <View style={styles.authContainer}>
-        {/* Ambient Gradient Glow */}
-        <View style={styles.glowTop} />
-        <View style={styles.glowBottom} />
-
-        <SafeAreaView style={styles.authContent}>
-          <View style={styles.heroSection}>
-            <Image
-              source={{ uri: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=200&auto=format&fit=crop' }}
-              style={styles.logoImage}
-            />
-            <Text style={styles.brandTitle}>AMBIENT GYM</Text>
-            <Text style={styles.brandSubtitle}>The AI-First, Local-Offline Fitness Ecosystem</Text>
-          </View>
-
-          <GlassCard style={styles.authCard}>
-            <Text style={styles.authCardTitle}>Connect Your Profile</Text>
-            <Text style={styles.authCardDesc}>
-              Securely authenticate to enable cloud backup, cross-device sync, and custom fatigue tracking models.
-            </Text>
-
-            <TouchableOpacity
-              style={[styles.authButton, styles.appleButton]}
-              onPress={() => triggerHapticAuth('apple')}
-            >
-              <Text style={styles.authButtonText}>Sign in with Apple</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.authButton, styles.googleButton]}
-              onPress={() => triggerHapticAuth('google')}
-            >
-              <Text style={styles.authButtonText}>Sign in with Google</Text>
-            </TouchableOpacity>
-
-            <Text style={styles.lockInfo}>🔒 Encrypted inside your iPhone's Secure Enclave</Text>
-          </GlassCard>
-        </SafeAreaView>
-      </View>
-    );
+  if (isAuthenticated === null) {
+    return <View style={styles.loadingContainer} />;
   }
 
   return (
     <View style={styles.container}>
-      {/* Background glow layers */}
       <View style={styles.glowTop} />
-      <View style={styles.glowBottom} />
-
+      
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.headerBar}>
           <View>
-            <Text style={styles.welcomeText}>Welcome back,</Text>
-            <Text style={styles.userName}>{session.fullName}</Text>
+            <Text style={styles.dateLabel}>THURSDAY, JULY 2</Text>
+            <Text style={styles.headerTitle}>Summary</Text>
           </View>
-
-          <View style={styles.headerButtons}>
-            <TouchableOpacity style={styles.btnSetting} onPress={() => setShowConfig(!showConfig)}>
-              <Text style={styles.btnSettingText}>⚙️</Text>
+          <View style={styles.headerActions}>
+            <TouchableOpacity style={styles.configButton} onPress={() => setShowConfig(!showConfig)}>
+              <Text style={styles.configButtonText}>⚙️</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btnLogout} onPress={logout}>
-              <Text style={styles.btnLogoutText}>Log Out</Text>
+            <TouchableOpacity 
+              style={styles.resetAuthButton} 
+              onPress={async () => {
+                if (Platform.OS === 'web') {
+                  localStorage.removeItem('ambient_gym_jwt_token');
+                } else {
+                  await SecureStore.deleteItemAsync('ambient_gym_jwt_token');
+                }
+                router.replace('/onboarding' as any);
+              }}
+            >
+              <Text style={styles.resetAuthText}>Reset</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -107,61 +109,107 @@ export default function HomeScreen() {
           {/* Key Configurations Panel */}
           {showConfig && (
             <GlassCard style={styles.configCard}>
-              <Text style={styles.configTitle}>API Keys & Services</Text>
-              <Text style={styles.configDesc}>
-                Provide an OpenAI API key to use live voice transcription. Leave blank to run the offline simulation sandbox mode.
+              <Text style={styles.configHeader}>API Credentials</Text>
+              <Text style={styles.configText}>
+                Provide an OpenAI API key to process voice transcriptions. Leave blank to run simulated voice logs.
               </Text>
               <TextInput
                 style={styles.configInput}
                 placeholder="sk-proj-..."
-                placeholderTextColor="rgba(255,255,255,0.3)"
+                placeholderTextColor="rgba(255,255,255,0.2)"
                 value={apiKey}
                 onChangeText={setApiKey}
                 secureTextEntry
               />
-              <TouchableOpacity style={styles.btnSaveConfig} onPress={() => setShowConfig(false)}>
-                <Text style={styles.btnSaveConfigText}>Close Configuration</Text>
+              <TouchableOpacity style={styles.configSave} onPress={() => setShowConfig(false)}>
+                <Text style={styles.configSaveText}>Done</Text>
               </TouchableOpacity>
             </GlassCard>
           )}
 
-          {/* Quick Metrics */}
-          <View style={styles.statsRow}>
-            <GlassCard style={styles.statCell}>
-              <Text style={styles.statLabel}>Today's Volume</Text>
-              <Text style={styles.statValue}>{totalVolume} lbs</Text>
-            </GlassCard>
+          {/* Concentric rings metrics */}
+          <GlassCard style={styles.ringsCard}>
+            <Text style={styles.cardHeader}>Daily Activity Rings</Text>
+            <View style={styles.ringsContainer}>
+              <AppleRing 
+                progress={activeCaloriesBurned / calorieTarget} 
+                color="#fa2d5a" // Pink
+                backgroundColor="rgba(250, 45, 90, 0.15)"
+                value={`${Math.round(activeCaloriesBurned)}`}
+                label="Cal"
+                size={84}
+                strokeWidth={9}
+              />
+              <AppleRing 
+                progress={waterOunces / waterTarget} 
+                color="#00a2ff" // Cyan
+                backgroundColor="rgba(0, 162, 255, 0.15)"
+                value={`${waterOunces}`}
+                label="oz"
+                size={84}
+                strokeWidth={9}
+              />
+              <AppleRing 
+                progress={journalProgress} 
+                color="#af52de" // Purple
+                backgroundColor="rgba(175, 82, 222, 0.15)"
+                value={journalProgress > 0 ? 'Log' : 'No'}
+                label="Diary"
+                size={84}
+                strokeWidth={9}
+              />
+            </View>
+          </GlassCard>
 
-            <GlassCard style={styles.statCell}>
-              <Text style={styles.statLabel}>Sets Logged</Text>
-              <Text style={styles.statValue}>{workoutSets.length}</Text>
-            </GlassCard>
-          </View>
+          {/* Hydration Logger */}
+          <GlassCard style={styles.waterCard}>
+            <View style={styles.sectionHeaderRow}>
+              <Text style={styles.cardHeader}>Hydration</Text>
+              {waterOunces > 0 && (
+                <TouchableOpacity onPress={handleClearWater}>
+                  <Text style={styles.clearText}>Reset</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            <Text style={styles.waterTotal}>{waterOunces} oz of {waterTarget} oz target</Text>
+            
+            <View style={styles.waterLogButtons}>
+              <TouchableOpacity style={styles.waterBtn} onPress={() => handleLogWater(8)}>
+                <Text style={styles.waterBtnText}>+8 oz</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.waterBtn} onPress={() => handleLogWater(16)}>
+                <Text style={styles.waterBtnText}>+16 oz</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.waterBtn} onPress={() => handleLogWater(24)}>
+                <Text style={styles.waterBtnText}>+24 oz</Text>
+              </TouchableOpacity>
+            </View>
+          </GlassCard>
 
           {/* Voice Intake */}
-          <AudioRecorder onParsedWorkout={handleParsedWorkout} openaiKey={apiKey} />
+          <AudioRecorder onParsedWorkout={addWorkoutSet} openaiKey={apiKey} />
 
-          {/* Overload calculations engine */}
+          {/* Overload calculation engine */}
           <OverloadPanel />
 
-          {/* Conflict resolution sync panel */}
+          {/* Sync engine conflict resolver */}
           <SyncPanel dirtyCount={dirtyCount} onSyncTriggered={refreshData} />
 
-          {/* Active Workout Logs */}
+          {/* Logged Workouts List */}
           <View style={styles.logsSection}>
             <View style={styles.sectionHeaderRow}>
-              <Text style={styles.sectionHeader}>Workout Logs</Text>
+              <Text style={styles.logsHeader}>Physical Activities</Text>
               {workoutSets.length > 0 && (
                 <TouchableOpacity onPress={clearAllSets}>
-                  <Text style={styles.clearText}>Clear All</Text>
+                  <Text style={styles.clearText}>Clear</Text>
                 </TouchableOpacity>
               )}
             </View>
 
             {workoutSets.length === 0 ? (
               <GlassCard style={styles.emptyCard}>
-                <Text style={styles.emptyText}>No workout logs recorded today.</Text>
-                <Text style={styles.emptySubtext}>Use the voice recorder or type a log above to get started!</Text>
+                <Text style={styles.emptyText}>No activities logged today.</Text>
+                <Text style={styles.emptySubtext}>Use the voice recorder above to capture a physical workout set.</Text>
               </GlassCard>
             ) : (
               workoutSets.map((set) => (
@@ -189,33 +237,28 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0a0a0c',
+    backgroundColor: '#000000',
   },
   safeArea: {
     flex: 1,
   },
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: '#000000',
+  },
   scrollContent: {
     padding: 16,
     paddingBottom: 40,
+    gap: 16,
   },
   glowTop: {
     position: 'absolute',
-    top: -100,
-    left: -100,
-    width: 300,
-    height: 300,
-    borderRadius: 150,
-    backgroundColor: 'rgba(99, 102, 241, 0.15)',
-    filter: Platform.OS === 'web' ? 'blur(60px)' : undefined,
-  },
-  glowBottom: {
-    position: 'absolute',
-    bottom: -100,
-    right: -100,
-    width: 350,
-    height: 350,
-    borderRadius: 175,
-    backgroundColor: 'rgba(236, 72, 153, 0.12)',
+    top: -120,
+    left: -120,
+    width: 320,
+    height: 320,
+    borderRadius: 160,
+    backgroundColor: 'rgba(250, 45, 90, 0.06)',
     filter: Platform.OS === 'web' ? 'blur(80px)' : undefined,
   },
   headerBar: {
@@ -224,76 +267,61 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 10,
-    paddingBottom: 6,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.08)',
   },
-  welcomeText: {
-    fontSize: 13,
+  dateLabel: {
+    fontSize: 10,
+    fontWeight: '700',
     color: 'rgba(255,255,255,0.4)',
+    letterSpacing: 1.5,
   },
-  userName: {
-    fontSize: 20,
+  headerTitle: {
+    fontSize: 28,
     fontWeight: '800',
     color: '#ffffff',
+    marginTop: 2,
   },
-  headerButtons: {
+  headerActions: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
   },
-  btnSetting: {
-    padding: 6,
+  configButton: {
+    padding: 8,
     backgroundColor: 'rgba(255,255,255,0.06)',
     borderRadius: 8,
   },
-  btnSettingText: {
+  configButtonText: {
     fontSize: 16,
   },
-  btnLogout: {
-    backgroundColor: 'rgba(239, 68, 68, 0.12)',
+  resetAuthButton: {
+    backgroundColor: 'rgba(255,255,255,0.08)',
     borderWidth: 1,
-    borderColor: 'rgba(239, 68, 68, 0.25)',
+    borderColor: 'rgba(255,255,255,0.15)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
   },
-  btnLogoutText: {
-    color: '#ef4444',
-    fontSize: 11,
-    fontWeight: '700',
-  },
-  statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
-    marginVertical: 10,
-  },
-  statCell: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  statLabel: {
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.4)',
-    textTransform: 'uppercase',
-    marginBottom: 4,
-  },
-  statValue: {
-    fontSize: 20,
-    fontWeight: '800',
+  resetAuthText: {
     color: '#ffffff',
+    fontSize: 11,
+    fontWeight: '600',
   },
   configCard: {
-    marginVertical: 10,
+    width: '100%',
   },
-  configTitle: {
-    fontSize: 15,
+  configHeader: {
+    fontSize: 16,
     fontWeight: '700',
     color: '#ffffff',
   },
-  configDesc: {
+  configText: {
     fontSize: 12,
     color: 'rgba(255,255,255,0.5)',
-    marginVertical: 6,
+    marginVertical: 8,
+    lineHeight: 16,
   },
   configInput: {
     backgroundColor: 'rgba(0,0,0,0.3)',
@@ -305,45 +333,85 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginBottom: 10,
   },
-  btnSaveConfig: {
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
+  configSave: {
+    backgroundColor: 'rgba(255,255,255,0.1)',
     paddingVertical: 8,
     borderRadius: 8,
     alignItems: 'center',
   },
-  btnSaveConfigText: {
+  configSaveText: {
     color: '#ffffff',
     fontSize: 12,
     fontWeight: '600',
   },
-  logsSection: {
-    marginTop: 18,
+  ringsCard: {
+    width: '100%',
+  },
+  cardHeader: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#ffffff',
+    marginBottom: 16,
+  },
+  ringsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  waterCard: {
+    width: '100%',
   },
   sectionHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
-  },
-  sectionHeader: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#ffffff',
+    marginBottom: 8,
   },
   clearText: {
     fontSize: 12,
     color: '#ef4444',
     fontWeight: '600',
   },
+  waterTotal: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#00a2ff',
+    marginBottom: 16,
+  },
+  waterLogButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  waterBtn: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 162, 255, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 162, 255, 0.25)',
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  waterBtnText: {
+    color: '#00a2ff',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  logsSection: {
+    marginTop: 8,
+  },
+  logsHeader: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#ffffff',
+  },
   emptyCard: {
     alignItems: 'center',
-    paddingVertical: 30,
+    paddingVertical: 32,
   },
   emptyText: {
     color: '#ffffff',
-    fontWeight: '600',
+    fontWeight: '700',
     fontSize: 14,
   },
   emptySubtext: {
@@ -351,78 +419,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'center',
     marginTop: 4,
-  },
-  // Auth Screen styles
-  authContainer: {
-    flex: 1,
-    backgroundColor: '#0a0a0c',
-    justifyContent: 'center',
-  },
-  authContent: {
-    padding: 24,
-    alignItems: 'center',
-  },
-  heroSection: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  logoImage: {
-    width: 90,
-    height: 90,
-    borderRadius: 24,
-    marginBottom: 16,
-  },
-  brandTitle: {
-    fontSize: 28,
-    fontWeight: '900',
-    color: '#ffffff',
-    letterSpacing: 2,
-  },
-  brandSubtitle: {
-    fontSize: 13,
-    color: 'rgba(255,255,255,0.5)',
-    marginTop: 4,
-    textAlign: 'center',
-  },
-  authCard: {
-    width: '100%',
-    padding: 24,
-  },
-  authCardTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#ffffff',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  authCardDesc: {
-    fontSize: 13,
-    color: 'rgba(255,255,255,0.6)',
-    textAlign: 'center',
-    lineHeight: 18,
-    marginBottom: 24,
-  },
-  authButton: {
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  appleButton: {
-    backgroundColor: '#ffffff',
-  },
-  googleButton: {
-    backgroundColor: '#4285f4',
-  },
-  authButtonText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#000000',
-  },
-  lockInfo: {
-    fontSize: 10,
-    color: 'rgba(255,255,255,0.3)',
-    textAlign: 'center',
-    marginTop: 10,
+    lineHeight: 16,
   },
 });
