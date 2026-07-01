@@ -226,7 +226,7 @@ export const DB = {
       WHERE w.is_deleted = 0
       ORDER BY w.updated_at DESC;
     `);
-    return rows.map(r => ({
+    return rows.map((r: any) => ({
       ...r,
       isDirty: !!r.isDirty,
       isDeleted: !!r.isDeleted,
@@ -242,11 +242,21 @@ export const DB = {
              weight, reps, rpe, is_dirty as isDirty, is_deleted as isDeleted, updated_at as updatedAt
       FROM workout_sets;
     `);
-    return rows.map(r => ({
+    return rows.map((r: any) => ({
       ...r,
       isDirty: !!r.isDirty,
       isDeleted: !!r.isDeleted,
     }));
+  },
+
+  async addExercise(ex: Exercise): Promise<void> {
+    if (Platform.OS === 'web' || !db) {
+      return memDB.addExercise(ex);
+    }
+    await db.runAsync(
+      'INSERT INTO exercises (id, name, category) VALUES (?, ?, ?) ON CONFLICT(id) DO NOTHING;',
+      [ex.id, ex.name, ex.category]
+    );
   },
 
   async saveWorkoutSet(set: WorkoutSet): Promise<void> {
