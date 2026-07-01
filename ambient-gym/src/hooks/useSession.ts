@@ -24,18 +24,25 @@ export interface UserSession {
 // 1. Initialize Supabase Client
 const ExpoSecureStoreAdapter = {
   getItem: async (key: string) => {
-    return Platform.OS === 'web' ? localStorage.getItem(key) : SecureStore.getItemAsync(key);
+    if (Platform.OS === 'web' && typeof window !== 'undefined' && window.localStorage) {
+      return window.localStorage.getItem(key);
+    }
+    return Platform.OS !== 'web' ? SecureStore.getItemAsync(key) : null;
   },
   setItem: async (key: string, value: string) => {
     if (Platform.OS === 'web') {
-      localStorage.setItem(key, value);
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.setItem(key, value);
+      }
     } else {
       await SecureStore.setItemAsync(key, value);
     }
   },
   removeItem: async (key: string) => {
     if (Platform.OS === 'web') {
-      localStorage.removeItem(key);
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.removeItem(key);
+      }
     } else {
       await SecureStore.deleteItemAsync(key);
     }
@@ -64,8 +71,8 @@ let isInitialized = false;
 async function initializeSession() {
   if (isInitialized) return;
   try {
-    const savedJwt = Platform.OS === 'web'
-      ? localStorage.getItem(JWT_KEY)
+    const savedJwt = (Platform.OS === 'web' && typeof window !== 'undefined' && window.localStorage)
+      ? window.localStorage.getItem(JWT_KEY)
       : await SecureStore.getItemAsync(JWT_KEY);
 
     if (savedJwt) {
@@ -211,8 +218,10 @@ export function useSession() {
       };
 
       if (Platform.OS === 'web') {
-        localStorage.setItem(JWT_KEY, mockJwt);
-        localStorage.setItem(REFRESH_KEY, mockRefresh);
+        if (typeof window !== 'undefined' && window.localStorage) {
+          window.localStorage.setItem(JWT_KEY, mockJwt);
+          window.localStorage.setItem(REFRESH_KEY, mockRefresh);
+        }
       } else {
         await SecureStore.setItemAsync(JWT_KEY, mockJwt);
         await SecureStore.setItemAsync(REFRESH_KEY, mockRefresh);
@@ -236,8 +245,10 @@ export function useSession() {
     } finally {
       try {
         if (Platform.OS === 'web') {
-          localStorage.removeItem(JWT_KEY);
-          localStorage.removeItem(REFRESH_KEY);
+          if (typeof window !== 'undefined' && window.localStorage) {
+            window.localStorage.removeItem(JWT_KEY);
+            window.localStorage.removeItem(REFRESH_KEY);
+          }
         } else {
           await SecureStore.deleteItemAsync(JWT_KEY);
           await SecureStore.deleteItemAsync(REFRESH_KEY);
