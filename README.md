@@ -6,13 +6,13 @@ This repository contains a collection of productivity, fitness, and lifestyle op
 
 All applications are located in individual subdirectories within this workspace.
 
-- **dailytracker (v1.0.0):** A unified, local-first wellness and gym logging application for iOS utilizing ambient voice transcription, progressive overload modeling, and direct device-to-device mesh synchronization.
+- **aura (v1.0.0):** A unified, local-first wellness and gym logging application for iOS utilizing ambient voice transcription, progressive overload modeling, and direct device-to-device mesh synchronization.
 
 ## General Setup Instructions
 
-To view or configure any of the iOS applications:
+To view or configure any of the applications:
 
-1. Open Xcode 16 or newer.
-2. Open the specific project subfolder (for example, dailytracker).
-3. Select your target device or simulator.
-4. Run the project target.
+1. Open your terminal in the specific project subfolder (for example, aura).
+2. Install the node modules: `npm install`.
+3. Start the Expo development server: `npx expo start`.
+4. Scan the generated QR code using the camera on your iPhone to launch it instantly in the Expo Go app.
