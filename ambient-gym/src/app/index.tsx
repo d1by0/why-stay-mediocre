@@ -1,6 +1,3 @@
-/**
- * Premium Apple Routines-Inspired Daily Habit Tracker
- */
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, TextInput, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,6 +9,8 @@ import { SyncPanel } from '../components/custom/SyncPanel';
 import { OverloadPanel } from '../components/custom/OverloadPanel';
 import { WorkoutLogCard } from '../components/custom/WorkoutLogCard';
 import { GlassCard } from '../components/custom/GlassCard';
+import { ConfirmationalReset } from '../components/custom/ConfirmationalReset';
+import { CustomGlassDrawerContent } from '../components/custom/CustomGlassDrawerContent';
 import { useWorkoutData } from '../hooks/useWorkoutData';
 import * as Haptics from 'expo-haptics';
 
@@ -20,6 +19,11 @@ export default function HomeScreen() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const { workoutSets, addWorkoutSet, deleteWorkoutSet, clearAllSets, refreshData } = useWorkoutData();
   
+  // Modals & UI States
+  const [resetModalVisible, setResetModalVisible] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [isLoadingSets, setIsLoadingSets] = useState(true);
+
   // Hydration state
   const [waterOunces, setWaterOunces] = useState(32);
   const waterTarget = 80;
@@ -27,6 +31,14 @@ export default function HomeScreen() {
   // Selected Day Timeline
   const [selectedDay, setSelectedDay] = useState('Thu');
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  // Simulate SQLite migration & schema sync loading state (Zero State)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoadingSets(false);
+    }, 900);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Check auth status on mount
   useEffect(() => {
@@ -81,16 +93,9 @@ export default function HomeScreen() {
           <View style={styles.headerActions}>
             <TouchableOpacity 
               style={styles.resetAuthButton} 
-              onPress={async () => {
-                if (Platform.OS === 'web') {
-                  localStorage.removeItem('ambient_gym_jwt_token');
-                } else {
-                  await SecureStore.deleteItemAsync('ambient_gym_jwt_token');
-                }
-                router.replace('/onboarding' as any);
-              }}
+              onPress={() => setDrawerVisible(true)}
             >
-              <Text style={styles.resetAuthText}>Reset</Text>
+              <Text style={styles.resetAuthText}>Menu 📊</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -179,13 +184,19 @@ export default function HomeScreen() {
             <View style={styles.sectionHeaderRow}>
               <Text style={styles.logsHeader}>Daily Logbook</Text>
               {workoutSets.length > 0 && (
-                <TouchableOpacity onPress={clearAllSets}>
+                <TouchableOpacity onPress={() => setResetModalVisible(true)}>
                   <Text style={styles.clearText}>Clear All</Text>
                 </TouchableOpacity>
               )}
             </View>
 
-            {workoutSets.length === 0 ? (
+            {isLoadingSets ? (
+              // Shimmer Skeletons (Zero State Placeholder)
+              <View style={{ gap: 8 }}>
+                <View style={{ height: 68, backgroundColor: 'rgba(0,0,0,0.03)', borderRadius: 16, borderWidth: 1, borderColor: 'rgba(0,0,0,0.04)' }} />
+                <View style={{ height: 68, backgroundColor: 'rgba(0,0,0,0.03)', borderRadius: 16, borderWidth: 1, borderColor: 'rgba(0,0,0,0.04)' }} />
+              </View>
+            ) : workoutSets.length === 0 ? (
               <GlassCard style={styles.emptyCard}>
                 <Text style={styles.emptyText}>No routine activities logged.</Text>
                 <Text style={styles.emptySubtext}>Use the voice recorder above to add an activity log.</Text>
@@ -209,6 +220,19 @@ export default function HomeScreen() {
 
         </ScrollView>
       </SafeAreaView>
+
+      {/* Swipe confirmation modal */}
+      <ConfirmationalReset
+        visible={resetModalVisible}
+        onClose={() => setResetModalVisible(false)}
+        onConfirm={clearAllSets}
+      />
+
+      {/* Glassmorphic Navigation Drawer */}
+      <CustomGlassDrawerContent
+        visible={drawerVisible}
+        onClose={() => setDrawerVisible(false)}
+      />
     </View>
   );
 }
