@@ -1,6 +1,6 @@
 /**
- * Session hook for Supabase and OAuth flow simulations
- * Persists JWT and Refresh tokens securely inside SecureStore (KeyChain)
+ * Session hook with global reactive state synchronization
+ * Syncs auth updates instantly across screens (onboarding & index).
  */
 import { useState, useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
@@ -17,54 +17,71 @@ export interface UserSession {
   jwt: string;
 }
 
-export function useSession() {
-  const [session, setSession] = useState<UserSession | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+// Global state list for listeners
+type Listener = (session: UserSession | null) => void;
+const listeners = new Set<Listener>();
+let globalSession: UserSession | null = null;
+let globalLoading = true;
+let isInitialized = false;
 
-  // Load saved session on startup
-  useEffect(() => {
-    async function loadSavedSession() {
-      try {
-        if (Platform.OS === 'web') {
-          // Web fallback
-          const savedJwt = localStorage.getItem(JWT_KEY);
-          if (savedJwt) {
-            setSession({
-              userId: 'user-1',
-              fullName: 'Alex Carter',
-              email: 'alex.carter@example.com',
-              provider: 'mock',
-              jwt: savedJwt,
-            });
-          }
-        } else {
-          // Hardware keychain
-          const savedJwt = await SecureStore.getItemAsync(JWT_KEY);
-          if (savedJwt) {
-            setSession({
-              userId: 'user-1',
-              fullName: 'Alex Carter',
-              email: 'alex.carter@example.com',
-              provider: 'mock',
-              jwt: savedJwt,
-            });
-          }
-        }
-      } catch (err) {
-        console.error('Failed to load secure session:', err);
-      } finally {
-        setIsLoading(false);
-      }
+// Initialize session state once on startup
+async function initializeSession() {
+  if (isInitialized) return;
+  try {
+    const savedJwt = Platform.OS === 'web'
+      ? localStorage.getItem(JWT_KEY)
+      : await SecureStore.getItemAsync(JWT_KEY);
+
+    if (savedJwt) {
+      globalSession = {
+        userId: 'user-1',
+        fullName: 'Alex Carter',
+        email: 'alex.carter@example.com',
+        provider: 'mock',
+        jwt: savedJwt,
+      };
     }
+  } catch (err) {
+    console.error('Failed to initialize session:', err);
+  } finally {
+    globalLoading = false;
+    isInitialized = true;
+    notifyListeners();
+  }
+}
 
-    loadSavedSession();
+function notifyListeners() {
+  listeners.forEach((listener) => listener(globalSession));
+}
+
+export function useSession() {
+  const [session, setSession] = useState<UserSession | null>(globalSession);
+  const [isLoading, setIsLoading] = useState(globalLoading);
+
+  useEffect(() => {
+    // Add listener
+    const listener: Listener = (newSession) => {
+      setSession(newSession);
+      setIsLoading(false);
+    };
+    listeners.add(listener);
+
+    // Run initialization
+    initializeSession().then(() => {
+      setIsLoading(globalLoading);
+      setSession(globalSession);
+    });
+
+    return () => {
+      listeners.delete(listener);
+    };
   }, []);
 
   const loginWithOAuth = async (provider: 'apple' | 'google') => {
     setIsLoading(true);
     try {
-      // Simulate OAuth redirect or native pop-up credentials verification
-      await new Promise(resolve => setTimeout(resolve, 1200));
+      // Replicate native OAuth delays
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       const mockJwt = 'jwt_' + Math.random().toString(36).substring(2);
       const mockRefresh = 'refresh_' + Math.random().toString(36).substring(2);
@@ -85,7 +102,8 @@ export function useSession() {
         await SecureStore.setItemAsync(REFRESH_KEY, mockRefresh);
       }
 
-      setSession(userSession);
+      globalSession = userSession;
+      notifyListeners();
     } catch (err) {
       console.error('OAuth sign in failed:', err);
     } finally {
@@ -103,7 +121,8 @@ export function useSession() {
         await SecureStore.deleteItemAsync(JWT_KEY);
         await SecureStore.deleteItemAsync(REFRESH_KEY);
       }
-      setSession(null);
+      globalSession = null;
+      notifyListeners();
     } catch (err) {
       console.error('Logout error:', err);
     } finally {

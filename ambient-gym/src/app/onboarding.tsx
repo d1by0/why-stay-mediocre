@@ -5,11 +5,12 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
 import { ApplePermissionModal } from '../components/custom/ApplePermissionModal';
+import { useSession } from '../hooks/useSession';
 
 export default function OnboardingScreen() {
   const router = useRouter();
+  const { loginWithOAuth } = useSession();
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
   const [friendCode, setFriendCode] = useState('');
@@ -40,16 +41,11 @@ export default function OnboardingScreen() {
       // Trigger Health Permission Modal
       setShowHealthModal(true);
     } else if (step === 4) {
-      // Complete Onboarding, save session
-      const jwt = 'jwt_' + Math.random().toString(36).substring(2);
-      if (Platform.OS === 'web') {
-        localStorage.setItem('ambient_gym_jwt_token', jwt);
-      } else {
-        await SecureStore.setItemAsync('ambient_gym_jwt_token', jwt);
-      }
+      // Complete Onboarding, trigger session login
+      await loginWithOAuth('apple');
       
       // Navigate to dashboard
-      router.replace('/');
+      router.replace('/' as any);
     }
   };
 

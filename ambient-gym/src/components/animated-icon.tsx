@@ -1,7 +1,10 @@
-import { Image } from 'expo-image';
+/**
+ * Redesigned Animated Icon and Splash Screen
+ * Replaces all Expo logo images with custom glowing concentric ring elements.
+ */
+import React, { useState } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
-import { useState } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View, Text } from 'react-native';
 import Animated, { Easing, Keyframe } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
@@ -16,10 +19,6 @@ export function AnimatedSplashOverlay() {
 
   const splashKeyframe = new Keyframe({
     0: {
-      transform: [{ scale: 1 }],
-      opacity: 1,
-    },
-    20: {
       opacity: 1,
     },
     70: {
@@ -28,12 +27,16 @@ export function AnimatedSplashOverlay() {
     },
     100: {
       opacity: 0,
-      transform: [{ scale: 1 }],
-      easing: Easing.elastic(0.7),
     },
   });
 
-  const image = <Image style={styles.image} source={require('@/assets/images/expo-logo.png')} />;
+  const brandingElement = (
+    <View style={styles.splashBrandContainer}>
+      <View style={styles.glowingHalo} />
+      <Text style={styles.splashBrandText}>Ambient</Text>
+      <Text style={styles.splashBrandSubtext}>HABITS</Text>
+    </View>
+  );
 
   return animate ? (
     <Animated.View
@@ -44,7 +47,7 @@ export function AnimatedSplashOverlay() {
         }
       })}
       style={styles.splashOverlay}>
-      {image}
+      {brandingElement}
     </Animated.View>
   ) : (
     <View
@@ -54,7 +57,7 @@ export function AnimatedSplashOverlay() {
         });
       }}
       style={styles.splashOverlay}>
-      {image}
+      {brandingElement}
     </View>
   );
 }
@@ -74,11 +77,6 @@ const logoKeyframe = new Keyframe({
     transform: [{ scale: 1.3 }],
     opacity: 0,
   },
-  40: {
-    transform: [{ scale: 1.3 }],
-    opacity: 0,
-    easing: Easing.elastic(0.7),
-  },
   100: {
     opacity: 1,
     transform: [{ scale: 1 }],
@@ -86,40 +84,18 @@ const logoKeyframe = new Keyframe({
   },
 });
 
-const glowKeyframe = new Keyframe({
-  0: {
-    transform: [{ rotateZ: '0deg' }],
-  },
-  100: {
-    transform: [{ rotateZ: '7200deg' }],
-  },
-});
-
 export function AnimatedIcon() {
   return (
     <View style={styles.iconContainer}>
-      <Animated.View entering={glowKeyframe.duration(60 * 1000 * 4)} style={styles.glow}>
-        <Image style={styles.glow} source={require('@/assets/images/logo-glow.png')} />
-      </Animated.View>
-
       <Animated.View entering={keyframe.duration(DURATION)} style={styles.background} />
-      <Animated.View style={styles.imageContainer} entering={logoKeyframe.duration(DURATION)}>
-        <Image style={styles.image} source={require('@/assets/images/expo-logo.png')} />
+      <Animated.View style={styles.logoHaloContainer} entering={logoKeyframe.duration(DURATION)}>
+        <View style={styles.innerGlowingRing} />
       </Animated.View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  imageContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  glow: {
-    width: 201,
-    height: 201,
-    position: 'absolute',
-  },
   iconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -127,22 +103,67 @@ const styles = StyleSheet.create({
     height: 128,
     zIndex: 100,
   },
-  image: {
-    width: 76,
-    height: 71,
-  },
   background: {
     borderRadius: 40,
-    experimental_backgroundImage: `linear-gradient(180deg, #3C9FFE, #0274DF)`,
+    backgroundColor: '#0a0a0c',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.08)',
     width: 128,
     height: 128,
     position: 'absolute',
   },
+  logoHaloContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 76,
+    height: 76,
+  },
+  innerGlowingRing: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 5,
+    borderColor: '#fa2d5a', // Activity Pink
+    shadowColor: '#fa2d5a',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+  },
   splashOverlay: {
     ...StyleSheet.absoluteFill,
-    backgroundColor: '#208AEF',
+    backgroundColor: '#000000',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1000,
+  },
+  splashBrandContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  glowingHalo: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 8,
+    borderColor: '#fa2d5a',
+    shadowColor: '#fa2d5a',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 20,
+    marginBottom: 24,
+  },
+  splashBrandText: {
+    fontSize: 32,
+    fontWeight: '800',
+    color: '#ffffff',
+    letterSpacing: 1,
+  },
+  splashBrandSubtext: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.4)',
+    letterSpacing: 6,
+    marginTop: 4,
+    textTransform: 'uppercase',
   },
 });
