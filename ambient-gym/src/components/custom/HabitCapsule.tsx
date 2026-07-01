@@ -23,7 +23,7 @@ export function HabitCapsule({
   iconText,
 }: HabitCapsuleProps) {
   const percentage = Math.round(progress * 100);
-  const heightPercent = `${Math.max(15, Math.min(percentage, 100))}%`;
+  const heightPercent = `${Math.max(15, Math.min(percentage, 100))}%` as any;
 
   return (
     <View style={styles.container}>
