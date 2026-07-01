@@ -1,13 +1,13 @@
 /**
- * AppleRing Component
- * Renders an Apple Fitness-style concentric circular progress ring using react-native-svg.
+ * AppleRing Component (Light Theme / iOS Health Optimized)
+ * Renders circular progress rings using explicit cross-platform layouts.
  */
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, Platform } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
 interface AppleRingProps {
-  progress: number; // 0.0 to 1.0 or more
+  progress: number; // 0.0 to 1.0
   size?: number;
   strokeWidth?: number;
   color?: string;
@@ -18,24 +18,22 @@ interface AppleRingProps {
 
 export function AppleRing({
   progress,
-  size = 120,
-  strokeWidth = 12,
-  color = '#fa2d5a', // Activity Pink
-  backgroundColor = 'rgba(250, 45, 90, 0.15)',
+  size = 90,
+  strokeWidth = 9,
+  color = '#FF8E8E', // Coral pink
+  backgroundColor = '#FDF0F0',
   label,
   value,
 }: AppleRingProps) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  
-  // Cap progress or allow wrapping
   const boundedProgress = Math.max(0, Math.min(progress, 1));
   const strokeDashoffset = circumference - boundedProgress * circumference;
 
   return (
     <View style={[styles.container, { width: size, height: size }]}>
-      <Svg width={size} height={size}>
-        {/* Background Track Circle */}
+      <Svg width={size} height={size} style={styles.svg}>
+        {/* Background Track */}
         <Circle
           cx={size / 2}
           cy={size / 2}
@@ -44,7 +42,7 @@ export function AppleRing({
           strokeWidth={strokeWidth}
           fill="none"
         />
-        {/* Foreground Progress Circle */}
+        {/* Progress Arc */}
         <Circle
           cx={size / 2}
           cy={size / 2}
@@ -55,12 +53,11 @@ export function AppleRing({
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
           fill="none"
-          // Rotate start from top (12 o'clock)
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />
       </Svg>
       
-      {/* Label and Value Overlay */}
+      {/* Centered Labels */}
       <View style={styles.overlay}>
         {value && <Text style={styles.valueText}>{value}</Text>}
         {label && <Text style={styles.labelText}>{label}</Text>}
@@ -75,22 +72,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
   },
+  svg: {
+    position: 'absolute',
+  },
   overlay: {
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 2,
   },
   valueText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#1c1c1e',
   },
   labelText: {
-    fontSize: 10,
-    color: 'rgba(255, 255, 255, 0.5)',
-    fontWeight: '600',
+    fontSize: 9,
+    color: 'rgba(0,0,0,0.4)',
+    fontWeight: '700',
     textTransform: 'uppercase',
     marginTop: 2,
+    letterSpacing: 0.5,
   },
 });
 export default AppleRing;
