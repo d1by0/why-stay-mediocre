@@ -6,7 +6,7 @@ This repository contains a collection of productivity, fitness, and lifestyle op
 
 All applications are located in individual subdirectories within this workspace.
 
-
+- **dailytracker (v1.0.0):** A unified, local-first wellness and gym logging application for iOS utilizing ambient voice transcription, progressive overload modeling, and direct device-to-device mesh synchronization.
 
 ## General Setup Instructions
 
