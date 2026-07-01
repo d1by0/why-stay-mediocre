@@ -1,4 +1,4 @@
-# Aura: Unified Ambient AI Gym, Habit, and P2P Social Ecosystem for iOS
+# Aura: Unified Ambient AI Gym, Habit, and P2P Social Ecosystem
 
 Aura is a cohesive, premium iOS ecosystem designed to eliminate user experience friction in tracking physical and mental optimization metrics. By integrating ambient voice logging, smart progressive overload tracking, automated habit checks, and offline peer-to-peer (P2P) synchronization into a minimalist visual interface, Aura replaces manual spreadsheet tracking with a responsive mobile workspace operating with zero external running costs.
 
